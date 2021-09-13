@@ -1,4 +1,3 @@
-
 # подключаем модуль tkinter
 from tkinter import *
 
@@ -22,46 +21,55 @@ planets_wiki = {
     "Плутон": {"info":"Крупнейшая по размеру известная карликовая планета Солнечной системы","image": PhotoImage(file=path +"/img/9.png")},
     "Ио": {"info":"Ио — спутник Юпитера, желтоватый цвет говорит о высоком содержании серы","image": PhotoImage(file=path +"/img/10.png")}
 }
+
+# функция события списка
+def listboxPlanetSelect(event) :
+   labelTitle.config(text ="Фотография планеты " + listboxPlanet.get(listboxPlanet.curselection()))
+   labelInfo.config(text = planets_wiki[listboxPlanet.get(listboxPlanet.curselection())]["info"])
+   labelPhoto.config(image = planets_wiki[listboxPlanet.get(listboxPlanet.curselection())]["image"])
+
 # основное окно
 window.title("Планеты солнечной системы")
 # не используем *.ico файлы, так как не работают на других платформах кроме windows
 window.iconphoto(False, PhotoImage(file=path + "/img/logo.png"))
 
 # панель со списком планет
-listFrame = Frame(window, height=300)
-listFrame.pack(fill=BOTH, side=LEFT)
+frameList = Frame(window,  bg='black', height=300)
+#frameList.config(anchor=CENTER)
+frameList.pack(fill=BOTH, side=LEFT)
 
 # label "Название планеты"
-label = Label(listFrame, bg='black', fg='white', text="Название планеты")
+label = Label(frameList, bg='black', fg='white', text="Название планеты")
 # размещаем label сверху frame
 label.pack(fill=BOTH, side=TOP)
 
 # list "Список планет"
-list = Listbox(listFrame)
+listboxPlanet = Listbox(frameList, borderwidth=10, bg='black', fg='white')
 # заполняем list
 for planet in planets_wiki:
-    list.insert(END, planet)
-# размещаем list заполняем свободное пространство frame
-list.pack(fill=BOTH, side=LEFT)
+    listboxPlanet.insert(END, planet)
+# размещаем list
+listboxPlanet.pack(side=TOP)
 
 # панель с информацией о планете
-infoFrame = Frame(window, height = 60, width = 60, bg = "red")
-infoFrame.pack(side = RIGHT)
+infoFrame = Frame(window)
+infoFrame.pack(fill=BOTH, side = TOP)
 
 # label с текстом "Фото планеты"
-Label(infoFrame, bg='black', fg='white', text="Фото планеты").pack(side=TOP)
-# размещаем label сверху frame
-#label.pack(side=TOP)
+labelTitle = Label(infoFrame, bg='black', fg='white', width=30, text="")
+labelTitle.pack(fill=BOTH, side=TOP)
 
-# переменная для хранения изображения выбранной планеты
 # первоначально загружаем default.png
 infoImage = PhotoImage(file=path + "/img/default.png")
 # Label с фтографией планеты
-#photo = Label(infoFrame, image = infoImage).pack(side = LEFT)
-photo = Label(infoFrame).pack(side = LEFT)
-#Print (photo)
-#photo.image = PhotoImage(file=path + "/img/default.png")
-# photo.pack(side = LEFT)
-print(photo)
-window.mainloop()
+labelPhoto = Label(infoFrame, bg='black', height= 200, image = infoImage)
+labelPhoto.pack(fill=BOTH, side = TOP)
 
+# label с текстом "Описание планеты"
+labelInfo = Label(infoFrame, bg='black', fg='white', height= 6, wraplength=200, text="")
+labelInfo.pack(fill=BOTH, side=TOP)
+
+# основной цикл
+listboxPlanet.bind("<<ListboxSelect>>", listboxPlanetSelect)
+window.resizable(False, False)
+window.mainloop()
